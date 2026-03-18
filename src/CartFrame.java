@@ -5,10 +5,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class CartFrame extends JFrame {
-    private DatabaseHelper db = new DatabaseHelper();
-    private ArrayList<Integer> cart;
-    private int userId;
-    private ShopFrame parent;
+    private final DatabaseHelper db = new DatabaseHelper();
+    private final ArrayList<Integer> cart;
+    private final int userId;
+    private final ShopFrame parent;
 
     public CartFrame(ArrayList<Integer> cart, int userId, ShopFrame parent) {
         this.cart = cart;
@@ -26,20 +26,21 @@ public class CartFrame extends JFrame {
 
         JLabel title = new JLabel("Вашата Поръчка", SwingConstants.CENTER);
         title.setFont(UI.FONT_HEADER);
-        title.setBorder(new EmptyBorder(0,0,20,0));
+        title.setBorder(new EmptyBorder(0, 0, 20, 0));
         p.add(title, BorderLayout.NORTH);
 
         DefaultListModel<String> model = new DefaultListModel<>();
         double total = 0;
         try {
-            for(int id : cart) {
+            for (int id : cart) {
                 ResultSet rs = db.executeSelect("SELECT ProductName, Price FROM Products WHERE ProductID=" + id);
-                if(rs.next()) {
+                if (rs.next()) {
                     model.addElement("• " + rs.getString("ProductName") + " — " + rs.getDouble("Price") + " лв.");
                     total += rs.getDouble("Price");
                 }
             }
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
 
         JList<String> list = new JList<>(model);
         list.setFont(UI.FONT_PLAIN);
@@ -69,9 +70,9 @@ public class CartFrame extends JFrame {
     }
 
     private void processPayment() {
-        if(cart.isEmpty()) return;
+        if (cart.isEmpty()) return;
         try {
-            for(int id : cart) {
+            for (int id : cart) {
                 db.executeUpdate("INSERT INTO Sales (ProductID, UserID, Quantity, TotalPrice) VALUES (" + id + "," + userId + ", 1, (SELECT Price FROM Products WHERE ProductID=" + id + "))");
                 db.executeUpdate("UPDATE Products SET StockQuantity = StockQuantity - 1 WHERE ProductID=" + id);
             }
@@ -79,6 +80,8 @@ public class CartFrame extends JFrame {
             cart.clear();
             parent.loadProducts();
             this.dispose();
-        } catch(Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

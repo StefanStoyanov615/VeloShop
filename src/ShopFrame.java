@@ -5,10 +5,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class ShopFrame extends JFrame {
-    private DatabaseHelper db = new DatabaseHelper();
-    private JTable table;
-    private ArrayList<Integer> cart = new ArrayList<>();
-    private int userId;
+    private final DatabaseHelper db = new DatabaseHelper();
+    private final JTable table;
+    private final ArrayList<Integer> cart = new ArrayList<>();
+    private final int userId;
 
     public ShopFrame(int userId, String role, String name) {
         this.userId = userId;
@@ -18,7 +18,6 @@ public class ShopFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- Sidebar (Ляво меню) ---
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(UI.PRIMARY);
@@ -31,15 +30,12 @@ public class ShopFrame extends JFrame {
         brand.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         sidebar.add(brand);
 
-        // Клиентско меню
         sidebar.add(createSectionLabel("МЕНЮ КЛИЕНТ"));
         JButton btnCart = UI.createMenuButton("Добави в количка");
         JButton btnPay = UI.createMenuButton("Плащане");
         sidebar.add(btnCart);
         sidebar.add(btnPay);
 
-        // --- АДМИНИСТРАЦИЯ (Проверка за роля) ---
-        // Увери се, че в базата данни в колона Role пише точно "Admin"
         if (role.equalsIgnoreCase("Admin")) {
             sidebar.add(Box.createVerticalStrut(20));
             sidebar.add(createSectionLabel("АДМИНИСТРАЦИЯ"));
@@ -49,7 +45,6 @@ public class ShopFrame extends JFrame {
             JButton btnSup = UI.createMenuButton("Доставчици");
             JButton btnUsers = UI.createMenuButton("Потребители");
 
-            // Отваряне на прозорците
             btnProd.addActionListener(e -> new ProductManagementFrame(this).setVisible(true));
             btnCat.addActionListener(e -> new CategoryManagementFrame().setVisible(true));
             btnSup.addActionListener(e -> new SupplierManagementFrame().setVisible(true));
@@ -61,11 +56,10 @@ public class ShopFrame extends JFrame {
             sidebar.add(btnUsers);
         }
 
-        sidebar.add(Box.createVerticalGlue()); // Избутва бутона за изход най-долу
+        sidebar.add(Box.createVerticalGlue());
         JButton btnExit = UI.createMenuButton("Изход");
         sidebar.add(btnExit);
 
-        // --- Content (Таблица) ---
         table = new JTable();
         UI.styleTable(table);
 
@@ -77,14 +71,10 @@ public class ShopFrame extends JFrame {
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
 
-        // --- EVENTS ---
-
-        // ПОПРАВКАТА ЗА ГРЕШКАТА (ClassCastException)
         btnCart.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row != -1) {
                 try {
-                    // Взимаме стойността като String и я парсваме към int
                     String idStr = table.getValueAt(row, 0).toString();
                     int id = Integer.parseInt(idStr);
 
@@ -100,7 +90,10 @@ public class ShopFrame extends JFrame {
         });
 
         btnPay.addActionListener(e -> new CartFrame(cart, userId, this).setVisible(true));
-        btnExit.addActionListener(e -> { dispose(); new Main().setVisible(true); });
+        btnExit.addActionListener(e -> {
+            dispose();
+            new Main().setVisible(true);
+        });
 
         loadProducts();
     }
@@ -119,6 +112,8 @@ public class ShopFrame extends JFrame {
         try {
             ResultSet rs = db.executeSelect("SELECT ProductID, Brand, ProductName, Price, StockQuantity FROM Products");
             table.setModel(DatabaseHelper.buildTableModel(rs));
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

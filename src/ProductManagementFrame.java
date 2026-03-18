@@ -6,12 +6,16 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 
 public class ProductManagementFrame extends JFrame {
-    private JTextField txtBrand, txtName, txtPrice, txtQty;
-    private JComboBox<ComboItem> comboCat, comboSup;
-    private JTable table;
-    private DatabaseHelper db = new DatabaseHelper();
-    private ShopFrame parent;
-    private int selectedId = -1; // To store the ID for editing
+    private final JTextField txtBrand;
+    private final JTextField txtName;
+    private final JTextField txtPrice;
+    private final JTextField txtQty;
+    private final JComboBox<ComboItem> comboCat;
+    private final JComboBox<ComboItem> comboSup;
+    private final JTable table;
+    private final DatabaseHelper db = new DatabaseHelper();
+    private final ShopFrame parent;
+    private int selectedId = -1;
 
     public ProductManagementFrame(ShopFrame parent) {
         this.parent = parent;
@@ -20,7 +24,6 @@ public class ProductManagementFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- Left: Form ---
         JPanel form = new JPanel();
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -55,7 +58,6 @@ public class ProductManagementFrame extends JFrame {
         form.add(txtQty = UI.createTextField());
         form.add(Box.createVerticalStrut(20));
 
-        // Buttons
         JPanel btnPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         btnPanel.setOpaque(false);
         JButton btnAdd = UI.createButton("ДОБАВИ", UI.ACCENT);
@@ -68,18 +70,15 @@ public class ProductManagementFrame extends JFrame {
         btnPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
         form.add(btnPanel);
 
-        // --- Center: Table ---
         table = new JTable();
         UI.styleTable(table);
 
         add(form, BorderLayout.WEST);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // --- Logic ---
         loadDropdowns();
         loadData();
 
-        // 1. Select Row Event
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int row = table.getSelectedRow();
@@ -89,48 +88,36 @@ public class ProductManagementFrame extends JFrame {
                     txtName.setText(table.getValueAt(row, 2).toString());
                     txtPrice.setText(table.getValueAt(row, 3).toString());
                     txtQty.setText(table.getValueAt(row, 4).toString());
-
-                    // Note: This simple table doesn't show CatID/SupID, so we can't auto-select dropdowns perfectly
-                    // without a complex query. For now, users must re-select Cat/Sup when editing.
                 }
             }
         });
 
-        // 2. Add
         btnAdd.addActionListener(e -> {
             try {
-                String sql = "INSERT INTO Products (Brand, ProductName, CategoryID, SupplierID, Price, StockQuantity) VALUES ('"
-                        + txtBrand.getText() + "', '" + txtName.getText() + "', "
-                        + ((ComboItem)comboCat.getSelectedItem()).getId() + ", "
-                        + ((ComboItem)comboSup.getSelectedItem()).getId() + ", "
-                        + txtPrice.getText() + ", " + txtQty.getText() + ")";
+                String sql = "INSERT INTO Products (Brand, ProductName, CategoryID, SupplierID, Price, StockQuantity) VALUES ('" + txtBrand.getText() + "', '" + txtName.getText() + "', " + ((ComboItem) comboCat.getSelectedItem()).getId() + ", " + ((ComboItem) comboSup.getSelectedItem()).getId() + ", " + txtPrice.getText() + ", " + txtQty.getText() + ")";
                 db.executeUpdate(sql);
                 loadData();
                 clearForm();
                 parent.loadProducts();
-            } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Грешка: " + ex.getMessage()); }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Грешка: " + ex.getMessage());
+            }
         });
 
-        // 3. Edit
         btnEdit.addActionListener(e -> {
             if (selectedId == -1) return;
             try {
-                String sql = "UPDATE Products SET Brand='" + txtBrand.getText()
-                        + "', ProductName='" + txtName.getText()
-                        + "', CategoryID=" + ((ComboItem)comboCat.getSelectedItem()).getId()
-                        + ", SupplierID=" + ((ComboItem)comboSup.getSelectedItem()).getId()
-                        + ", Price=" + txtPrice.getText()
-                        + ", StockQuantity=" + txtQty.getText()
-                        + " WHERE ProductID=" + selectedId;
+                String sql = "UPDATE Products SET Brand='" + txtBrand.getText() + "', ProductName='" + txtName.getText() + "', CategoryID=" + ((ComboItem) comboCat.getSelectedItem()).getId() + ", SupplierID=" + ((ComboItem) comboSup.getSelectedItem()).getId() + ", Price=" + txtPrice.getText() + ", StockQuantity=" + txtQty.getText() + " WHERE ProductID=" + selectedId;
                 db.executeUpdate(sql);
                 loadData();
                 clearForm();
                 parent.loadProducts();
                 JOptionPane.showMessageDialog(this, "Продуктът е обновен!");
-            } catch (Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
-        // 4. Delete
         btnDel.addActionListener(e -> {
             if (selectedId == -1) return;
             if (JOptionPane.showConfirmDialog(this, "Сигурни ли сте?") == 0) {
@@ -139,31 +126,37 @@ public class ProductManagementFrame extends JFrame {
                     loadData();
                     clearForm();
                     parent.loadProducts();
-                } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Не може да се изтрие (има продажби)."); }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Не може да се изтрие (има продажби).");
+                }
             }
         });
     }
 
     private void loadData() {
         try {
-            // Updated query to match table structure
             ResultSet rs = db.executeSelect("SELECT ProductID, Brand, ProductName, Price, StockQuantity FROM Products");
             table.setModel(DatabaseHelper.buildTableModel(rs));
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private void loadDropdowns() {
         try {
             ResultSet rsCat = db.executeSelect("SELECT CategoryID, CategoryName FROM Categories");
-            while(rsCat.next()) comboCat.addItem(new ComboItem(rsCat.getInt(1), rsCat.getString(2)));
+            while (rsCat.next()) comboCat.addItem(new ComboItem(rsCat.getInt(1), rsCat.getString(2)));
 
             ResultSet rsSup = db.executeSelect("SELECT SupplierID, SupplierName FROM Suppliers");
-            while(rsSup.next()) comboSup.addItem(new ComboItem(rsSup.getInt(1), rsSup.getString(2)));
-        } catch (Exception e) {}
+            while (rsSup.next()) comboSup.addItem(new ComboItem(rsSup.getInt(1), rsSup.getString(2)));
+        } catch (Exception e) {
+        }
     }
 
     private void clearForm() {
-        txtBrand.setText(""); txtName.setText(""); txtPrice.setText(""); txtQty.setText("");
+        txtBrand.setText("");
+        txtName.setText("");
+        txtPrice.setText("");
+        txtQty.setText("");
         selectedId = -1;
     }
 }

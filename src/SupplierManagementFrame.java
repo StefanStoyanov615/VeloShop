@@ -5,9 +5,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class SupplierManagementFrame extends JFrame {
-    private DatabaseHelper db = new DatabaseHelper();
-    private JTable table;
-    private JTextField txtName, txtCity, txtPhone;
+    private final DatabaseHelper db = new DatabaseHelper();
+    private final JTable table;
+    private final JTextField txtName;
+    private final JTextField txtCity;
+    private final JTextField txtPhone;
     private int selectedId = -1;
 
     public SupplierManagementFrame() {
@@ -22,11 +24,14 @@ public class SupplierManagementFrame extends JFrame {
         form.setBackground(UI.BACKGROUND);
         form.setPreferredSize(new Dimension(280, 0));
 
-        form.add(UI.createLabel("Име:")); form.add(txtName = UI.createTextField());
+        form.add(UI.createLabel("Име:"));
+        form.add(txtName = UI.createTextField());
         form.add(Box.createVerticalStrut(10));
-        form.add(UI.createLabel("Град:")); form.add(txtCity = UI.createTextField());
+        form.add(UI.createLabel("Град:"));
+        form.add(txtCity = UI.createTextField());
         form.add(Box.createVerticalStrut(10));
-        form.add(UI.createLabel("Телефон:")); form.add(txtPhone = UI.createTextField());
+        form.add(UI.createLabel("Телефон:"));
+        form.add(txtPhone = UI.createTextField());
         form.add(Box.createVerticalStrut(20));
 
         JPanel btnPanel = new JPanel(new GridLayout(3, 1, 5, 5));
@@ -34,7 +39,9 @@ public class SupplierManagementFrame extends JFrame {
         JButton btnAdd = UI.createButton("ДОБАВИ", UI.ACCENT);
         JButton btnEdit = UI.createButton("РЕДАКТИРАЙ", UI.EDIT);
         JButton btnDel = UI.createButton("ИЗТРИЙ", UI.WARNING);
-        btnPanel.add(btnAdd); btnPanel.add(btnEdit); btnPanel.add(btnDel);
+        btnPanel.add(btnAdd);
+        btnPanel.add(btnEdit);
+        btnPanel.add(btnDel);
         btnPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
         form.add(btnPanel);
 
@@ -44,11 +51,10 @@ public class SupplierManagementFrame extends JFrame {
         add(form, BorderLayout.WEST);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // Select Row
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int row = table.getSelectedRow();
-                if(row != -1) {
+                if (row != -1) {
                     selectedId = (int) table.getValueAt(row, 0);
                     txtName.setText(table.getValueAt(row, 1).toString());
                     txtCity.setText(table.getValueAt(row, 2).toString());
@@ -57,35 +63,35 @@ public class SupplierManagementFrame extends JFrame {
             }
         });
 
-        // Add
         btnAdd.addActionListener(e -> {
             try {
-                db.executeUpdate("INSERT INTO Suppliers (SupplierName, City, Phone) VALUES ('"
-                        + txtName.getText() + "', '" + txtCity.getText() + "', '" + txtPhone.getText() + "')");
+                db.executeUpdate("INSERT INTO Suppliers (SupplierName, City, Phone) VALUES ('" + txtName.getText() + "', '" + txtCity.getText() + "', '" + txtPhone.getText() + "')");
                 refresh();
-            } catch(Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
-        // Edit
         btnEdit.addActionListener(e -> {
-            if(selectedId == -1) return;
+            if (selectedId == -1) return;
             try {
-                db.executeUpdate("UPDATE Suppliers SET SupplierName='" + txtName.getText()
-                        + "', City='" + txtCity.getText() + "', Phone='" + txtPhone.getText()
-                        + "' WHERE SupplierID=" + selectedId);
+                db.executeUpdate("UPDATE Suppliers SET SupplierName='" + txtName.getText() + "', City='" + txtCity.getText() + "', Phone='" + txtPhone.getText() + "' WHERE SupplierID=" + selectedId);
                 refresh();
                 JOptionPane.showMessageDialog(this, "Обновено!");
-            } catch(Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
-        // Delete
         btnDel.addActionListener(e -> {
-            if(selectedId == -1) return;
-            if(JOptionPane.showConfirmDialog(this, "Сигурни ли сте?") == 0) {
+            if (selectedId == -1) return;
+            if (JOptionPane.showConfirmDialog(this, "Сигурни ли сте?") == 0) {
                 try {
                     db.executeUpdate("DELETE FROM Suppliers WHERE SupplierID=" + selectedId);
                     refresh();
-                } catch(Exception ex) { JOptionPane.showMessageDialog(this, "Грешка при изтриване."); }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Грешка при изтриване.");
+                }
             }
         });
 
@@ -95,8 +101,11 @@ public class SupplierManagementFrame extends JFrame {
     private void refresh() {
         try {
             table.setModel(DatabaseHelper.buildTableModel(db.executeSelect("SELECT * FROM Suppliers")));
-        } catch(Exception e) {}
-        txtName.setText(""); txtCity.setText(""); txtPhone.setText("");
+        } catch (Exception e) {
+        }
+        txtName.setText("");
+        txtCity.setText("");
+        txtPhone.setText("");
         selectedId = -1;
     }
 }

@@ -6,12 +6,14 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 
 public class UserManagementFrame extends JFrame {
-    private DatabaseHelper db = new DatabaseHelper();
-    private JTable userTable;
-    private JTextField txtUsername, txtFullName, txtEmail;
-    private JPasswordField txtPassword;
-    private JComboBox<String> comboRole;
-    private int selectedId = -1; // Keeps track of the selected user for Edit/Delete
+    private final DatabaseHelper db = new DatabaseHelper();
+    private final JTable userTable;
+    private final JTextField txtUsername;
+    private final JTextField txtFullName;
+    private final JTextField txtEmail;
+    private final JPasswordField txtPassword;
+    private final JComboBox<String> comboRole;
+    private int selectedId = -1;
 
     public UserManagementFrame() {
         setTitle("Управление на Потребители");
@@ -19,24 +21,19 @@ public class UserManagementFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- Left Panel: Form ---
         JPanel form = new JPanel();
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setBorder(new EmptyBorder(20, 20, 20, 20));
         form.setBackground(UI.BACKGROUND);
         form.setPreferredSize(new Dimension(300, 0));
 
-        // Inputs
         form.add(UI.createLabel("Потребителско име:"));
         form.add(txtUsername = UI.createTextField());
         form.add(Box.createVerticalStrut(5));
 
         form.add(UI.createLabel("Парола:"));
         txtPassword = new JPasswordField();
-        txtPassword.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(189, 195, 199)),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
+        txtPassword.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)), new EmptyBorder(5, 10, 5, 10)));
         form.add(txtPassword);
         form.add(Box.createVerticalStrut(5));
 
@@ -54,7 +51,6 @@ public class UserManagementFrame extends JFrame {
         form.add(comboRole);
         form.add(Box.createVerticalStrut(20));
 
-        // Buttons Panel
         JPanel btnPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         btnPanel.setOpaque(false);
 
@@ -69,16 +65,12 @@ public class UserManagementFrame extends JFrame {
 
         form.add(btnPanel);
 
-        // --- Center: Table ---
         userTable = new JTable();
         UI.styleTable(userTable);
 
         add(form, BorderLayout.WEST);
         add(new JScrollPane(userTable), BorderLayout.CENTER);
 
-        // --- EVENTS ---
-
-        // 1. Select Row Listener
         userTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -92,14 +84,11 @@ public class UserManagementFrame extends JFrame {
                     String role = userTable.getValueAt(row, 4).toString();
                     comboRole.setSelectedItem(role);
 
-                    // We DO NOT fill the password field for security.
-                    // If user leaves it blank, we keep the old password.
                     txtPassword.setText("");
                 }
             }
         });
 
-        // 2. Add User
         btnAdd.addActionListener(e -> {
             String pass = new String(txtPassword.getPassword());
             if (txtUsername.getText().isEmpty() || pass.isEmpty()) {
@@ -107,10 +96,7 @@ public class UserManagementFrame extends JFrame {
                 return;
             }
             try {
-                String sql = "INSERT INTO Users (Username, Password, FullName, Email, Role) VALUES ('"
-                        + txtUsername.getText() + "', '" + pass + "', '"
-                        + txtFullName.getText() + "', '" + txtEmail.getText() + "', '"
-                        + comboRole.getSelectedItem() + "')";
+                String sql = "INSERT INTO Users (Username, Password, FullName, Email, Role) VALUES ('" + txtUsername.getText() + "', '" + pass + "', '" + txtFullName.getText() + "', '" + txtEmail.getText() + "', '" + comboRole.getSelectedItem() + "')";
                 db.executeUpdate(sql);
                 loadUsers();
                 clearForm();
@@ -120,7 +106,6 @@ public class UserManagementFrame extends JFrame {
             }
         });
 
-        // 3. Edit User
         btnEdit.addActionListener(e -> {
             if (selectedId == -1) {
                 JOptionPane.showMessageDialog(this, "Моля, изберете потребител от таблицата!");
@@ -130,31 +115,21 @@ public class UserManagementFrame extends JFrame {
                 String pass = new String(txtPassword.getPassword());
                 String sql;
 
-                // If password field is empty, don't update the password column
                 if (pass.isEmpty()) {
-                    sql = "UPDATE Users SET Username='" + txtUsername.getText() + "', " +
-                            "FullName='" + txtFullName.getText() + "', " +
-                            "Email='" + txtEmail.getText() + "', " +
-                            "Role='" + comboRole.getSelectedItem() + "' " +
-                            "WHERE UserID=" + selectedId;
+                    sql = "UPDATE Users SET Username='" + txtUsername.getText() + "', " + "FullName='" + txtFullName.getText() + "', " + "Email='" + txtEmail.getText() + "', " + "Role='" + comboRole.getSelectedItem() + "' " + "WHERE UserID=" + selectedId;
                 } else {
-                    // Update password as well
-                    sql = "UPDATE Users SET Username='" + txtUsername.getText() + "', " +
-                            "Password='" + pass + "', " +
-                            "FullName='" + txtFullName.getText() + "', " +
-                            "Email='" + txtEmail.getText() + "', " +
-                            "Role='" + comboRole.getSelectedItem() + "' " +
-                            "WHERE UserID=" + selectedId;
+                    sql = "UPDATE Users SET Username='" + txtUsername.getText() + "', " + "Password='" + pass + "', " + "FullName='" + txtFullName.getText() + "', " + "Email='" + txtEmail.getText() + "', " + "Role='" + comboRole.getSelectedItem() + "' " + "WHERE UserID=" + selectedId;
                 }
 
                 db.executeUpdate(sql);
                 loadUsers();
                 clearForm();
                 JOptionPane.showMessageDialog(this, "Данните са обновени!");
-            } catch (Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
-        // 4. Delete User
         btnDel.addActionListener(e -> {
             if (selectedId == -1) {
                 JOptionPane.showMessageDialog(this, "Моля, изберете потребител от таблицата!");
@@ -177,11 +152,12 @@ public class UserManagementFrame extends JFrame {
 
     private void loadUsers() {
         try {
-            // We select columns to show in the table (Excluded Password for security)
             String sql = "SELECT UserID, Username, FullName, Email, Role FROM Users";
             ResultSet rs = db.executeSelect(sql);
             userTable.setModel(DatabaseHelper.buildTableModel(rs));
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearForm() {

@@ -4,15 +4,13 @@ import java.awt.*;
 import java.sql.ResultSet;
 
 public class Main extends JFrame {
-    private CardLayout cardLayout = new CardLayout();
-    private JPanel mainPanel;
-    private DatabaseHelper db = new DatabaseHelper();
+    private final CardLayout cardLayout = new CardLayout();
+    private final JPanel mainPanel;
+    private final DatabaseHelper db = new DatabaseHelper();
 
-    // Login Fields
     private JTextField txtLoginUser;
     private JPasswordField txtLoginPass;
 
-    // Register Fields
     private JTextField txtRegUser, txtRegName, txtRegEmail;
     private JPasswordField txtRegPass;
 
@@ -68,7 +66,6 @@ public class Main extends JFrame {
         p.add(Box.createVerticalStrut(10));
         p.add(btnGoToReg);
 
-        // Logic
         btnLogin.addActionListener(e -> handleLogin());
         btnGoToReg.addActionListener(e -> {
             setTitle("VeloShop - Регистрация");
@@ -99,10 +96,14 @@ public class Main extends JFrame {
         txtRegName = UI.createTextField();
         txtRegEmail = UI.createTextField();
 
-        form.add(UI.createLabel("Потребителско име:")); form.add(txtRegUser);
-        form.add(UI.createLabel("Парола:")); form.add(txtRegPass);
-        form.add(UI.createLabel("Име и Фамилия:")); form.add(txtRegName);
-        form.add(UI.createLabel("Имейл:")); form.add(txtRegEmail);
+        form.add(UI.createLabel("Потребителско име:"));
+        form.add(txtRegUser);
+        form.add(UI.createLabel("Парола:"));
+        form.add(txtRegPass);
+        form.add(UI.createLabel("Име и Фамилия:"));
+        form.add(txtRegName);
+        form.add(UI.createLabel("Имейл:"));
+        form.add(txtRegEmail);
 
         JButton btnReg = UI.createButton("РЕГИСТРАЦИЯ", UI.PRIMARY);
         btnReg.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -119,7 +120,6 @@ public class Main extends JFrame {
         p.add(Box.createVerticalStrut(10));
         p.add(btnBack);
 
-        // Logic
         btnReg.addActionListener(e -> handleRegister());
         btnBack.addActionListener(e -> {
             setTitle("VeloShop - Вход");
@@ -131,29 +131,32 @@ public class Main extends JFrame {
 
     private void handleLogin() {
         try {
-            String sql = "SELECT * FROM Users WHERE Username='" + txtLoginUser.getText() +
-                    "' AND Password='" + new String(txtLoginPass.getPassword()) + "'";
+            String sql = "SELECT * FROM Users WHERE Username='" + txtLoginUser.getText() + "' AND Password='" + new String(txtLoginPass.getPassword()) + "'";
             ResultSet rs = db.executeSelect(sql);
             if (rs.next()) {
                 new ShopFrame(rs.getInt("UserID"), rs.getString("Role"), rs.getString("FullName")).setVisible(true);
                 this.dispose();
-            } else { JOptionPane.showMessageDialog(this, "Грешни данни!"); }
-        } catch (Exception ex) { ex.printStackTrace(); }
+            } else {
+                JOptionPane.showMessageDialog(this, "Грешни данни!");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void handleRegister() {
-        if(txtRegUser.getText().isEmpty() || new String(txtRegPass.getPassword()).isEmpty()) {
+        if (txtRegUser.getText().isEmpty() || new String(txtRegPass.getPassword()).isEmpty()) {
             JOptionPane.showMessageDialog(this, "Попълни всички полета!");
             return;
         }
         try {
-            String sql = "INSERT INTO Users (Username, Password, FullName, Email, Role) VALUES ('"
-                    + txtRegUser.getText() + "', '" + new String(txtRegPass.getPassword()) + "', '"
-                    + txtRegName.getText() + "', '" + txtRegEmail.getText() + "', 'User')";
+            String sql = "INSERT INTO Users (Username, Password, FullName, Email, Role) VALUES ('" + txtRegUser.getText() + "', '" + new String(txtRegPass.getPassword()) + "', '" + txtRegName.getText() + "', '" + txtRegEmail.getText() + "', 'User')";
             db.executeUpdate(sql);
             JOptionPane.showMessageDialog(this, "Успешна регистрация! Сега можеш да влезеш.");
             cardLayout.show(mainPanel, "LOGIN");
-        } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Потребителското име е заето!"); }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Потребителското име е заето!");
+        }
     }
 
     private JLabel createWhiteLabel(String text) {
