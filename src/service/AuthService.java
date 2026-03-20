@@ -13,10 +13,10 @@ public class AuthService {
 
         if (customer != null) {
             this.loggedInCustomer = customer;
-            System.out.println("✅ Успешен вход! Добре дошли, " + customer.getFirstName() + "!");
+            System.out.println("Успешен вход! Добре дошли, " + customer.getFirstName() + "!");
             return customer;
         } else {
-            System.out.println("❌ Грешно потребителско име или парола.");
+            System.out.println("Грешно потребителско име или парола.");
             return null;
         }
     }
@@ -32,9 +32,9 @@ public class AuthService {
 
         boolean success = customerDAO.register(newCustomer);
         if (success) {
-            System.out.println("✅ Регистрацията беше успешна! Вече можете да влезете.");
+            System.out.println("Регистрацията беше успешна! Вече можете да влезете.");
         } else {
-            System.out.println("❌ Грешка: Потребителското име или имейлът вече съществуват.");
+            System.out.println("Грешка: Потребителското име или имейлът вече съществуват.");
         }
         return success;
     }

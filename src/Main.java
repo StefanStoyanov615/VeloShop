@@ -110,8 +110,8 @@ public class Main extends JFrame {
 
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JSpinner spinQty = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-        JButton btnAdd = new JButton("🛒 Добави в количката");
-        JButton btnCheckout = new JButton("💳 ПЛАЩАНЕ");
+        JButton btnAdd = new JButton("Добави в количката");
+        JButton btnCheckout = new JButton("ПЛАЩАНЕ");
         btnCheckout.setBackground(new Color(225, 112, 85)); btnCheckout.setForeground(Color.WHITE);
 
         footer.add(new JLabel("Брой:")); footer.add(spinQty); footer.add(btnAdd); footer.add(btnCheckout);

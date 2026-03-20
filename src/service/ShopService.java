@@ -42,7 +42,7 @@ public class ShopService {
         }
 
         if (selectedProduct == null || selectedProduct.getStockQuantity() < quantity) {
-            System.out.println("❌ Грешка: Продуктът не съществува или няма достатъчна наличност!");
+            System.out.println("Грешка: Продуктът не съществува или няма достатъчна наличност!");
             return;
         }
 
@@ -53,13 +53,13 @@ public class ShopService {
         item.setPriceAtSale(selectedProduct.getPrice());
 
         cart.add(item);
-        System.out.println("✅ Добавено в количката: " + selectedProduct.getName() + " (" + quantity + " бр.)");
+        System.out.println("Добавено в количката: " + selectedProduct.getName() + " (" + quantity + " бр.)");
     }
 
     
     public void checkout(Customer customer) {
         if (cart.isEmpty()) {
-            System.out.println("❌ Количката е празна!");
+            System.out.println("Количката е празна!");
             return;
         }
 
@@ -84,13 +84,13 @@ public class ShopService {
                 for (OrderItem item : cart) {
                     productDAO.updateStock(item.getProductId(), item.getQuantity());
                 }
-                System.out.println("🎉 Поръчката е завършена успешно! Обща сума: " + total + " лв.");
+                System.out.println("Поръчката е завършена успешно! Обща сума: " + total + " лв.");
                 cart.clear(); 
             } catch (SQLException e) {
                 System.out.println("Грешка при обновяване на наличността.");
             }
         } else {
-            System.out.println("❌ Възникна грешка при обработка на поръчката.");
+            System.out.println("Възникна грешка при обработка на поръчката.");
         }
     }
 }
