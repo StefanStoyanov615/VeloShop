@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public class Product {
     private int id;
     private String name;
-    private int categoryId;   
-    private int brandId;      
-    private int supplierId;   
-    private String brandName;    
-    private String supplierName; 
-    private BigDecimal price; 
+    private int categoryId;
+    private int brandId;
+    private int supplierId;
+    private String brandName;
+    private String supplierName;
+    private BigDecimal price;
     private String specifications;
     private int stockQuantity;
 
@@ -112,18 +112,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", categoryId=" + categoryId +
-                ", brandId=" + brandId +
-                ", supplierId=" + supplierId +
-                ", brandName='" + brandName + '\'' +
-                ", supplierName='" + supplierName + '\'' +
-                ", price=" + price +
-                ", specifications='" + specifications + '\'' +
-                ", stockQuantity=" + stockQuantity +
-                '}';
+        return "Product{" + "id=" + id + ", name='" + name + '\'' + ", categoryId=" + categoryId + ", brandId=" + brandId + ", supplierId=" + supplierId + ", brandName='" + brandName + '\'' + ", supplierName='" + supplierName + '\'' + ", price=" + price + ", specifications='" + specifications + '\'' + ", stockQuantity=" + stockQuantity + '}';
     }
 
 }

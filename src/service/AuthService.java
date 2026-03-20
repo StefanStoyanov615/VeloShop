@@ -4,10 +4,10 @@ import dao.CustomerDAO;
 import model.Customer;
 
 public class AuthService {
-    private CustomerDAO customerDAO = new CustomerDAO();
+    private final CustomerDAO customerDAO = new CustomerDAO();
     private Customer loggedInCustomer = null;
 
-    
+
     public Customer login(String username, String password) {
         Customer customer = customerDAO.login(username, password);
 
@@ -21,22 +21,28 @@ public class AuthService {
         }
     }
 
-    
-    public boolean register(String fName, String lName, String user, String pass, String email) {
-        Customer newCustomer = new Customer();
-        newCustomer.setFirstName(fName);
-        newCustomer.setLastName(lName);
-        newCustomer.setUsername(user);
-        newCustomer.setPassword(pass);
-        newCustomer.setEmail(email);
 
-        boolean success = customerDAO.register(newCustomer);
-        if (success) {
-            System.out.println("Регистрацията беше успешна! Вече можете да влезете.");
-        } else {
-            System.out.println("Грешка: Потребителското име или имейлът вече съществуват.");
+    public boolean deleteAccount() {
+        if (loggedInCustomer != null) {
+            boolean success = customerDAO.deleteCustomer(loggedInCustomer.getId());
+            if (success) {
+                loggedInCustomer = null;
+                return true;
+            }
         }
-        return success;
+        return false;
+    }
+
+    public boolean register(String fName, String lName, String user, String pass, String email, String phone, String address) {
+        model.Customer c = new model.Customer();
+        c.setFirstName(fName);
+        c.setLastName(lName);
+        c.setUsername(user);
+        c.setPassword(pass);
+        c.setEmail(email);
+        c.setPhone(phone);
+        c.setAddress(address);
+        return customerDAO.register(c);
     }
 
     public void logout() {

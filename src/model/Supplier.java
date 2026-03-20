@@ -50,12 +50,7 @@ public class Supplier {
 
     @Override
     public String toString() {
-        return "Supplier{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", contactEmail='" + contactEmail + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return "Supplier{" + "id=" + id + ", name='" + name + '\'' + ", contactEmail='" + contactEmail + '\'' + ", phone='" + phone + '\'' + '}';
     }
 
 }

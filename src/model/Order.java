@@ -5,9 +5,9 @@ import java.sql.Timestamp;
 
 public class Order {
     private int id;
-    private int customerId;      
+    private int customerId;
     private Timestamp orderDate;
-    private String status;       
+    private String status;
     private BigDecimal totalAmount;
 
     public Order(int id, int customerId, Timestamp orderDate, String status, BigDecimal totalAmount) {
@@ -63,13 +63,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", orderDate=" + orderDate +
-                ", status='" + status + '\'' +
-                ", totalAmount=" + totalAmount +
-                '}';
+        return "Order{" + "id=" + id + ", customerId=" + customerId + ", orderDate=" + orderDate + ", status='" + status + '\'' + ", totalAmount=" + totalAmount + '}';
     }
 
 }

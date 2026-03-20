@@ -2,6 +2,7 @@ package dao;
 
 import model.Order;
 import model.OrderItem;
+
 import java.sql.*;
 import java.util.List;
 
@@ -14,21 +15,21 @@ public class OrderDAO {
         Connection conn = null;
         try {
             conn = DatabaseManager.getConnection();
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
-            
+
             PreparedStatement psOrder = conn.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS);
             psOrder.setInt(1, order.getCustomerId());
             psOrder.setBigDecimal(2, order.getTotalAmount());
             psOrder.setString(3, "Paid");
             psOrder.executeUpdate();
 
-            
+
             ResultSet rs = psOrder.getGeneratedKeys();
             if (rs.next()) {
                 int orderId = rs.getInt(1);
 
-                
+
                 PreparedStatement psItem = conn.prepareStatement(itemSql);
                 for (OrderItem item : items) {
                     psItem.setInt(1, orderId);
@@ -40,10 +41,14 @@ public class OrderDAO {
                 psItem.executeBatch();
             }
 
-            conn.commit(); 
+            conn.commit();
             return true;
         } catch (SQLException e) {
-            if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            if (conn != null) try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
             return false;
         }

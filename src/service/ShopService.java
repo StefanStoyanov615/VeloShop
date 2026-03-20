@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShopService {
-    private ProductDAO productDAO = new ProductDAO();
-    private OrderDAO orderDAO = new OrderDAO();
+    private final ProductDAO productDAO = new ProductDAO();
+    private final OrderDAO orderDAO = new OrderDAO();
 
-    
-    private List<OrderItem> cart = new ArrayList<>();
 
-    
+    private final List<OrderItem> cart = new ArrayList<>();
+
+
     public void printAvailableProducts() {
         List<Product> products = productDAO.getAllProducts();
         System.out.println("\n--- СПИСЪК С ПРОДУКТИ ---");
@@ -28,9 +28,9 @@ public class ShopService {
         }
     }
 
-    
+
     public void addToCart(int productId, int quantity) {
-        
+
         List<Product> allProducts = productDAO.getAllProducts();
         Product selectedProduct = null;
 
@@ -46,7 +46,7 @@ public class ShopService {
             return;
         }
 
-        
+
         OrderItem item = new OrderItem();
         item.setProductId(productId);
         item.setQuantity(quantity);
@@ -56,36 +56,36 @@ public class ShopService {
         System.out.println("Добавено в количката: " + selectedProduct.getName() + " (" + quantity + " бр.)");
     }
 
-    
+
     public void checkout(Customer customer) {
         if (cart.isEmpty()) {
             System.out.println("Количката е празна!");
             return;
         }
 
-        
+
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : cart) {
             BigDecimal itemTotal = item.getPriceAtSale().multiply(new BigDecimal(item.getQuantity()));
             total = total.add(itemTotal);
         }
 
-        
+
         Order newOrder = new Order();
         newOrder.setCustomerId(customer.getId());
         newOrder.setTotalAmount(total);
 
-        
+
         boolean success = orderDAO.createOrder(newOrder, cart);
 
         if (success) {
-            
+
             try {
                 for (OrderItem item : cart) {
                     productDAO.updateStock(item.getProductId(), item.getQuantity());
                 }
                 System.out.println("Поръчката е завършена успешно! Обща сума: " + total + " лв.");
-                cart.clear(); 
+                cart.clear();
             } catch (SQLException e) {
                 System.out.println("Грешка при обновяване на наличността.");
             }

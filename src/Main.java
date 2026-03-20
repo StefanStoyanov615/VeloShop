@@ -1,8 +1,8 @@
+import dao.ProductDAO;
 import model.Customer;
 import model.Product;
 import service.AuthService;
 import service.ShopService;
-import dao.ProductDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,17 +10,17 @@ import java.awt.*;
 import java.util.List;
 
 public class Main extends JFrame {
-    private AuthService authService = new AuthService();
-    private ShopService shopService = new ShopService();
-    private ProductDAO productDAO = new ProductDAO();
+    private final AuthService authService = new AuthService();
+    private final ShopService shopService = new ShopService();
+    private final ProductDAO productDAO = new ProductDAO();
     private List<Product> displayedProducts;
 
-    private CardLayout cardLayout = new CardLayout();
-    private JPanel mainPanel = new JPanel(cardLayout);
+    private final CardLayout cardLayout = new CardLayout();
+    private final JPanel mainPanel = new JPanel(cardLayout);
 
     public Main() {
-        setTitle("VeloShop - Професионална Система");
-        setSize(1100, 700);
+        setTitle("VeloShop System");
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -33,62 +33,78 @@ public class Main extends JFrame {
     }
 
     private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(45, 52, 54));
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(10, 10, 10, 10);
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 300, 100, 300));
 
-        JLabel title = new JLabel("VELOSHOP LOGIN");
-        title.setForeground(Color.WHITE); title.setFont(new Font("SansSerif", Font.BOLD, 26));
-        g.gridx = 0; g.gridy = 0; g.gridwidth = 2; panel.add(title, g);
+        JTextField txtUser = new JTextField();
+        JPasswordField txtPass = new JPasswordField();
+        JButton btnLogin = new JButton("Влез");
+        JButton btnToReg = new JButton("Към Регистрация");
 
-        g.gridwidth = 1; g.gridy = 1; g.gridx = 0;
-        JLabel l1 = new JLabel("Потребител:"); l1.setForeground(Color.WHITE); panel.add(l1, g);
-        JTextField txtUser = new JTextField(15); g.gridx = 1; panel.add(txtUser, g);
-
-        g.gridy = 2; g.gridx = 0;
-        JLabel l2 = new JLabel("Парола:"); l2.setForeground(Color.WHITE); panel.add(l2, g);
-        JPasswordField txtPass = new JPasswordField(15); g.gridx = 1; panel.add(txtPass, g);
-
-        JButton btnLogin = new JButton("ВЛИЗАНЕ");
-        btnLogin.setBackground(new Color(0, 184, 148)); btnLogin.setForeground(Color.WHITE);
-        g.gridy = 3; g.gridx = 0; g.gridwidth = 2; g.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(btnLogin, g);
-
-        JButton btnGoReg = new JButton("Нямате профил? Регистрирайте се тук");
-        btnGoReg.setContentAreaFilled(false); btnGoReg.setBorderPainted(false); btnGoReg.setForeground(Color.LIGHT_GRAY);
-        g.gridy = 4; panel.add(btnGoReg, g);
+        panel.add(new JLabel("Потребител:"));
+        panel.add(txtUser);
+        panel.add(new JLabel("Парола:"));
+        panel.add(txtPass);
+        panel.add(btnLogin);
+        panel.add(btnToReg);
 
         btnLogin.addActionListener(e -> {
             Customer c = authService.login(txtUser.getText(), new String(txtPass.getPassword()));
-            if (c != null) { refreshTable(); cardLayout.show(mainPanel, "Store"); }
-            else { JOptionPane.showMessageDialog(this, "Грешни данни!"); }
+            if (c != null) {
+                refreshTable();
+                cardLayout.show(mainPanel, "Store");
+            } else {
+                JOptionPane.showMessageDialog(this, "Грешни данни!");
+            }
         });
-        btnGoReg.addActionListener(e -> cardLayout.show(mainPanel, "Register"));
+
+        btnToReg.addActionListener(e -> cardLayout.show(mainPanel, "Register"));
         return panel;
     }
 
     private JPanel createRegisterPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints g = new GridBagConstraints(); g.insets = new Insets(5, 5, 5, 5);
+        JPanel panel = new JPanel(new GridLayout(9, 2, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(50, 300, 50, 300));
 
-        JTextField fName = new JTextField(15); JTextField lName = new JTextField(15);
-        JTextField uName = new JTextField(15); JPasswordField pass = new JPasswordField(15);
-        JTextField email = new JTextField(15);
+        JTextField fName = new JTextField();
+        JTextField lName = new JTextField();
+        JTextField uName = new JTextField();
+        JPasswordField pass = new JPasswordField();
+        JTextField email = new JTextField();
+        JTextField phone = new JTextField();
+        JTextField address = new JTextField();
 
-        panel.add(new JLabel("Име:"), g); g.gridx = 1; panel.add(fName, g);
-        g.gridx = 0; g.gridy = 1; panel.add(new JLabel("Фамилия:"), g); g.gridx = 1; panel.add(lName, g);
-        g.gridx = 0; g.gridy = 2; panel.add(new JLabel("Потребител:"), g); g.gridx = 1; panel.add(uName, g);
-        g.gridx = 0; g.gridy = 3; panel.add(new JLabel("Парола:"), g); g.gridx = 1; panel.add(pass, g);
-        g.gridx = 0; g.gridy = 4; panel.add(new JLabel("Имейл:"), g); g.gridx = 1; panel.add(email, g);
+        JButton btnReg = new JButton("Регистрирай ме");
+        JButton btnBack = new JButton("Назад");
 
-        JButton btnReg = new JButton("СЪЗДАЙ ПРОФИЛ"); g.gridy = 5; g.gridx = 0; g.gridwidth = 2; panel.add(btnReg, g);
-        JButton btnBack = new JButton("Назад"); g.gridy = 6; panel.add(btnBack, g);
+        panel.add(new JLabel("Име:"));
+        panel.add(fName);
+        panel.add(new JLabel("Фамилия:"));
+        panel.add(lName);
+        panel.add(new JLabel("Потребител:"));
+        panel.add(uName);
+        panel.add(new JLabel("Парола:"));
+        panel.add(pass);
+        panel.add(new JLabel("Имейл:"));
+        panel.add(email);
+        panel.add(new JLabel("Телефон:"));
+        panel.add(phone);
+        panel.add(new JLabel("Адрес:"));
+        panel.add(address);
+        panel.add(btnReg);
+        panel.add(btnBack);
 
         btnReg.addActionListener(e -> {
-            if(authService.register(fName.getText(), lName.getText(), uName.getText(), new String(pass.getPassword()), email.getText()))
+            boolean success = authService.register(fName.getText(), lName.getText(), uName.getText(), new String(pass.getPassword()), email.getText(), phone.getText(), address.getText());
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Успешна регистрация!");
                 cardLayout.show(mainPanel, "Login");
+            } else {
+                JOptionPane.showMessageDialog(this, "Грешка при регистрация!");
+            }
         });
+
         btnBack.addActionListener(e -> cardLayout.show(mainPanel, "Login"));
         return panel;
     }
@@ -98,41 +114,58 @@ public class Main extends JFrame {
 
     private JPanel createStorePanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(9, 132, 227)); header.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JLabel welcome = new JLabel("Магазин VeloShop"); welcome.setForeground(Color.WHITE); welcome.setFont(new Font("Arial", Font.BOLD, 18));
-        JButton btnLogout = new JButton("Изход"); header.add(welcome, BorderLayout.WEST); header.add(btnLogout, BorderLayout.EAST);
-        panel.add(header, BorderLayout.NORTH);
 
-        String[] cols = {"Продукт", "Марка", "Доставчик", "Спецификации", "Цена (лв.)", "Наличност"};
-        tableModel = new DefaultTableModel(cols, 0); table = new JTable(tableModel);
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnDel = new JButton("Изтрий профил");
+        JButton btnLogout = new JButton("Изход");
+        top.add(btnDel);
+        top.add(btnLogout);
+        panel.add(top, BorderLayout.NORTH);
+
+        String[] cols = {"Продукт", "Марка", "Доставчик", "Спецификации", "Цена", "Наличност"};
+        tableModel = new DefaultTableModel(cols, 0);
+        table = new JTable(tableModel);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        JSpinner spinQty = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-        JButton btnAdd = new JButton("Добави в количката");
-        JButton btnCheckout = new JButton("ПЛАЩАНЕ");
-        btnCheckout.setBackground(new Color(225, 112, 85)); btnCheckout.setForeground(Color.WHITE);
-
-        footer.add(new JLabel("Брой:")); footer.add(spinQty); footer.add(btnAdd); footer.add(btnCheckout);
-        panel.add(footer, BorderLayout.SOUTH);
+        JPanel bottom = new JPanel(new FlowLayout());
+        JSpinner spinQty = new JSpinner(new SpinnerNumberModel(1, 1, 50, 1));
+        JButton btnAdd = new JButton("Добави в количка");
+        JButton btnBuy = new JButton("Купи всичко");
+        bottom.add(new JLabel("Количество:"));
+        bottom.add(spinQty);
+        bottom.add(btnAdd);
+        bottom.add(btnBuy);
+        panel.add(bottom, BorderLayout.SOUTH);
 
         btnAdd.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row != -1) {
                 int id = displayedProducts.get(row).getId();
                 shopService.addToCart(id, (int) spinQty.getValue());
-                JOptionPane.showMessageDialog(this, "Добавено в количката!");
-            } else { JOptionPane.showMessageDialog(this, "Изберете продукт!"); }
+                JOptionPane.showMessageDialog(this, "Добавено!");
+            }
         });
 
-        btnCheckout.addActionListener(e -> {
+        btnBuy.addActionListener(e -> {
             shopService.checkout(authService.getLoggedInCustomer());
             refreshTable();
-            JOptionPane.showMessageDialog(this, "Поръчката е завършена успешно!");
+            JOptionPane.showMessageDialog(this, "Поръчката е завършена!");
         });
 
-        btnLogout.addActionListener(e -> { authService.logout(); cardLayout.show(mainPanel, "Login"); });
+        btnLogout.addActionListener(e -> {
+            authService.logout();
+            cardLayout.show(mainPanel, "Login");
+        });
+
+        btnDel.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "Изтриване на акаунта?");
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (authService.deleteAccount()) {
+                    cardLayout.show(mainPanel, "Login");
+                }
+            }
+        });
+
         return panel;
     }
 
