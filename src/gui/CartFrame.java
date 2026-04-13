@@ -42,7 +42,7 @@ public class CartFrame extends JFrame {
         JButton deleteBtn = new JButton("Remove Selected Item");
         JButton checkoutBtn = new JButton("Place Order / Checkout");
 
-        deleteBtn.setFont(new Font("Arial", Font.PLAIN, 14));
+        deleteBtn.setFont(new Font("Arial", Font.BOLD, 14));
         checkoutBtn.setFont(new Font("Arial", Font.BOLD, 14));
 
         deleteBtn.setBackground(new Color(255, 204, 204));

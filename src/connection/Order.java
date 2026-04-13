@@ -139,4 +139,33 @@ public class Order {
             e.printStackTrace();
         }
     }
+
+    public static List<OrderItem> getPurchaseHistory() {
+        List<OrderItem> history = new ArrayList<>();
+        String sql = "SELECT oi.order_item_id, oi.quantity, oi.price_at_sale, " +
+                "p.product_id, p.name, o.order_date " +
+                "FROM order_items oi " +
+                "JOIN orders o ON oi.order_id = o.order_id " +
+                "JOIN products p ON oi.product_id = p.product_id " +
+                "WHERE o.customer_id = ? AND o.status = 'Paid' " +
+                "ORDER BY o.order_date DESC";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, Database.currentCustomerId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                model.Product p = new model.Product(
+                        rs.getInt("product_id"), rs.getString("name"),
+                        "", "", "", 0.0, "", 0
+                );
+
+                history.add(new OrderItem(rs.getInt("order_item_id"), p, rs.getInt("quantity"), rs.getDouble("price_at_sale")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return history;
+    }
 }

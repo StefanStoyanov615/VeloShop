@@ -40,10 +40,12 @@ public class ShopFrame extends JFrame {
         JPanel bottomPanel = new JPanel();
         JButton addCartBtn = new JButton("Add Selected to Cart");
         JButton viewCartBtn = new JButton("Open My Cart");
+        JButton historyBtn = new JButton("Order History");
         JButton logoutBtn = new JButton("Logout");
 
         bottomPanel.add(addCartBtn);
         bottomPanel.add(viewCartBtn);
+        bottomPanel.add(historyBtn);
         bottomPanel.add(logoutBtn);
 
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -62,6 +64,10 @@ public class ShopFrame extends JFrame {
         });
 
         viewCartBtn.addActionListener(e -> new CartFrame().setVisible(true));
+
+        historyBtn.addActionListener(e -> {
+            new HistoryFrame().setVisible(true);
+        });
 
         logoutBtn.addActionListener(e -> {
             connection.Database.currentCustomerId = -1;

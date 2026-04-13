@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 20, 2026 at 06:20 PM
+-- Generation Time: Apr 13, 2026 at 02:57 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
@@ -90,7 +90,6 @@ CREATE TABLE `customers` (
   `password` varchar(255) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `address` text,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -98,8 +97,9 @@ CREATE TABLE `customers` (
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`customer_id`, `first_name`, `last_name`, `username`, `password`, `email`, `phone`, `address`, `created_at`) VALUES
-(13, 'stefan', 'stefan', 'stefan', 'stefan', 'stefan', '1234', 'stefan', '2026-03-20 18:16:25');
+INSERT INTO `customers` (`customer_id`, `first_name`, `last_name`, `username`, `password`, `email`, `phone`, `created_at`) VALUES
+(13, 'stefan', 'stefan', 'stefan', 'stefan', 'stefan', '1234', '2026-03-20 18:16:25'),
+(14, 'r', 'r', 'r', 'r', 'r', 'r', '2026-04-13 14:23:39');
 
 -- --------------------------------------------------------
 
@@ -115,6 +115,20 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `customer_id`, `order_date`, `status`, `total_amount`) VALUES
+(1, 13, '2026-04-13 17:23:13', 'Paid', '5720.50'),
+(2, 14, '2026-04-13 17:33:01', 'Paid', '320.50'),
+(3, 14, '2026-04-13 17:33:32', 'Paid', '4200.00'),
+(4, 14, '2026-04-13 17:37:38', 'Paid', '320.50'),
+(5, 14, '2026-04-13 17:37:50', 'Paid', '4800.00'),
+(6, 14, '2026-04-13 17:47:00', 'Paid', '115.00'),
+(7, 14, '2026-04-13 17:52:38', 'Pending', '0.00'),
+(8, 13, '2026-04-13 17:53:26', 'Pending', '0.00');
+
 -- --------------------------------------------------------
 
 --
@@ -128,6 +142,19 @@ CREATE TABLE `order_items` (
   `quantity` int(11) NOT NULL,
   `price_at_sale` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `price_at_sale`) VALUES
+(2, 1, 1, 1, '5400.00'),
+(3, 1, 2, 1, '320.50'),
+(4, 2, 2, 1, '320.50'),
+(6, 3, 3, 1, '4200.00'),
+(7, 4, 2, 1, '320.50'),
+(8, 5, 7, 1, '4800.00'),
+(9, 6, 4, 1, '115.00');
 
 -- --------------------------------------------------------
 
@@ -151,13 +178,13 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `name`, `category_id`, `brand_id`, `supplier_id`, `price`, `specifications`, `stock_quantity`) VALUES
-(1, 'Stumpjumper Comp', 1, 1, 1, '5400.00', 'Carbon frame, 29 inch wheels, SRAM drivetrain', 0),
-(2, 'Shimano XT Brakes', 4, 2, 2, '320.50', 'Hydraulic disc brakes, 4-piston', 8),
-(3, 'Cube Reaction Hybrid', 3, 3, 5, '4200.00', 'Bosch Motor 85Nm, 625Wh Battery', 2),
-(4, 'GP 5000 Tire', 5, 7, 3, '115.00', '700x25c, Foldable, BlackChili compound', 25),
+(1, 'Stumpjumper Comp', 1, 1, 1, '5400.00', 'Carbon frame, 29 inch wheels, SRAM drivetrain', 10),
+(2, 'Shimano XT Brakes', 4, 2, 2, '320.50', 'Hydraulic disc brakes, 4-piston', 5),
+(3, 'Cube Reaction Hybrid', 3, 3, 5, '4200.00', 'Bosch Motor 85Nm, 625Wh Battery', 1),
+(4, 'GP 5000 Tire', 5, 7, 3, '115.00', '700x25c, Foldable, BlackChili compound', 24),
 (5, 'SRAM GX Eagle Chain', 6, 4, 4, '65.00', '12-speed, Silver, 126 links', 25),
 (6, 'Trek Domane SL5', 2, 5, 1, '6100.00', 'Endurance road bike, Shimano 105', 2),
-(7, 'Giant Trance X', 1, 6, 7, '4800.00', 'Full suspension, 150mm travel', 4),
+(7, 'Giant Trance X', 1, 6, 7, '4800.00', 'Full suspension, 150mm travel', 3),
 (8, 'Schwalbe Magic Mary', 5, 8, 3, '95.00', '29x2.4, Super Gravity, Addix Soft', 20),
 (9, 'Scott Spark RC', 1, 10, 10, '7500.00', 'Cross Country race bike, Integrated shock', 1),
 (10, 'Shimano Saint Pedals', 7, 2, 6, '180.00', 'Flat pedals, DH focused, replaceable pins', 12);
@@ -181,7 +208,7 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `name`, `contact_email`, `phone`) VALUES
 (1, 'Bike Distro Ltd', 'info@bikedistro.com', '0888111222'),
-(2, 'Euro Parts', 'sales@europarts.de', '+49123456'),
+(2, 'Euro Parts', 'sales@europarts.de', '049123456'),
 (3, 'Global Cycling', 'contact@globalcycling.com', '0877333444'),
 (4, 'Fast Ship Gears', 'gears@fastship.com', '029887766'),
 (5, 'Velo Supply', 'velo@supply.bg', '0899000111'),
@@ -265,19 +292,19 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `products`
