@@ -1,20 +1,19 @@
-package dao;
+package connection;
 
-import model.Order;
 import model.OrderItem;
 
 import java.sql.*;
 import java.util.List;
 
-public class OrderDAO {
+public class Order {
 
-    public boolean createOrder(Order order, List<OrderItem> items) {
+    public boolean createOrder(model.Order order, List<OrderItem> items) {
         String orderSql = "INSERT INTO orders (customer_id, total_amount, status) VALUES (?, ?, ?)";
         String itemSql = "INSERT INTO order_items (order_id, product_id, quantity, price_at_sale) VALUES (?, ?, ?, ?)";
 
         Connection conn = null;
         try {
-            conn = DatabaseManager.getConnection();
+            conn = Database.getConnection();
             conn.setAutoCommit(false);
 
 

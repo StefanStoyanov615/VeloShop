@@ -1,15 +1,14 @@
 package service;
 
-import dao.CustomerDAO;
-import model.Customer;
+import connection.Customer;
 
 public class AuthService {
-    private final CustomerDAO customerDAO = new CustomerDAO();
-    private Customer loggedInCustomer = null;
+    private final Customer customerDAO = new Customer();
+    private model.Customer loggedInCustomer = null;
 
 
-    public Customer login(String username, String password) {
-        Customer customer = customerDAO.login(username, password);
+    public model.Customer login(String username, String password) {
+        model.Customer customer = customerDAO.login(username, password);
 
         if (customer != null) {
             this.loggedInCustomer = customer;
@@ -50,7 +49,7 @@ public class AuthService {
         System.out.println("Излязохте от системата.");
     }
 
-    public Customer getLoggedInCustomer() {
+    public model.Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
 }

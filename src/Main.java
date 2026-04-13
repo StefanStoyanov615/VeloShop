@@ -1,6 +1,5 @@
-import dao.ProductDAO;
+import connection.Product;
 import model.Customer;
-import model.Product;
 import service.AuthService;
 import service.ShopService;
 
@@ -12,8 +11,8 @@ import java.util.List;
 public class Main extends JFrame {
     private final AuthService authService = new AuthService();
     private final ShopService shopService = new ShopService();
-    private final ProductDAO productDAO = new ProductDAO();
-    private List<Product> displayedProducts;
+    private final Product productDAO = new Product();
+    private List<model.Product> displayedProducts;
 
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel mainPanel = new JPanel(cardLayout);
@@ -172,7 +171,7 @@ public class Main extends JFrame {
     private void refreshTable() {
         tableModel.setRowCount(0);
         displayedProducts = productDAO.getAllProducts();
-        for (Product p : displayedProducts) {
+        for (model.Product p : displayedProducts) {
             tableModel.addRow(new Object[]{p.getName(), p.getBrandName(), p.getSupplierName(), p.getSpecifications(), p.getPrice(), p.getStockQuantity()});
         }
     }

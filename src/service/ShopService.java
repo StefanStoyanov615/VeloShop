@@ -1,11 +1,9 @@
 package service;
 
-import dao.OrderDAO;
-import dao.ProductDAO;
+import connection.Order;
+import connection.Product;
 import model.Customer;
-import model.Order;
 import model.OrderItem;
-import model.Product;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -13,17 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShopService {
-    private final ProductDAO productDAO = new ProductDAO();
-    private final OrderDAO orderDAO = new OrderDAO();
+    private final Product productDAO = new Product();
+    private final Order orderDAO = new Order();
 
 
     private final List<OrderItem> cart = new ArrayList<>();
 
 
     public void printAvailableProducts() {
-        List<Product> products = productDAO.getAllProducts();
+        List<model.Product> products = productDAO.getAllProducts();
         System.out.println("\n--- СПИСЪК С ПРОДУКТИ ---");
-        for (Product p : products) {
+        for (model.Product p : products) {
             System.out.println("ID: " + p.getId() + " | " + p.getName() + " | Цена: " + p.getPrice() + " лв. | Наличност: " + p.getStockQuantity());
         }
     }
@@ -31,10 +29,10 @@ public class ShopService {
 
     public void addToCart(int productId, int quantity) {
 
-        List<Product> allProducts = productDAO.getAllProducts();
-        Product selectedProduct = null;
+        List<model.Product> allProducts = productDAO.getAllProducts();
+        model.Product selectedProduct = null;
 
-        for (Product p : allProducts) {
+        for (model.Product p : allProducts) {
             if (p.getId() == productId) {
                 selectedProduct = p;
                 break;
@@ -71,7 +69,7 @@ public class ShopService {
         }
 
 
-        Order newOrder = new Order();
+        model.Order newOrder = new model.Order();
         newOrder.setCustomerId(customer.getId());
         newOrder.setTotalAmount(total);
 
