@@ -12,10 +12,11 @@ public class Main extends JFrame {
     private final AuthService authService = new AuthService();
     private final ShopService shopService = new ShopService();
     private final Product productDAO = new Product();
-    private List<model.Product> displayedProducts;
-
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel mainPanel = new JPanel(cardLayout);
+    private List<model.Product> displayedProducts;
+    private JTable table;
+    private DefaultTableModel tableModel;
 
     public Main() {
         setTitle("VeloShop System");
@@ -29,6 +30,10 @@ public class Main extends JFrame {
 
         add(mainPanel);
         cardLayout.show(mainPanel, "Login");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
 
     private JPanel createLoginPanel() {
@@ -108,9 +113,6 @@ public class Main extends JFrame {
         return panel;
     }
 
-    private JTable table;
-    private DefaultTableModel tableModel;
-
     private JPanel createStorePanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -174,9 +176,5 @@ public class Main extends JFrame {
         for (model.Product p : displayedProducts) {
             tableModel.addRow(new Object[]{p.getName(), p.getBrandName(), p.getSupplierName(), p.getSpecifications(), p.getPrice(), p.getStockQuantity()});
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
 }
