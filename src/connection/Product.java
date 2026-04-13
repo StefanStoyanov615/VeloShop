@@ -1,42 +1,40 @@
 package connection;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Product {
-
-    public List<model.Product> getAllProducts() {
+    public static List<model.Product> getAllProducts() {
         List<model.Product> products = new ArrayList<>();
+        String sql = "SELECT p.product_id, p.name, c.name as cat_name, b.name as brand_name, " +
+                "s.name as supplier_name, p.price, p.specifications, p.stock_quantity " +
+                "FROM products p " +
+                "LEFT JOIN categories c ON p.category_id = c.category_id " +
+                "LEFT JOIN brands b ON p.brand_id = b.brand_id " +
+                "LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id";
 
-        String sql = "SELECT p.*, b.name AS brand_name, s.name AS supplier_name " + "FROM products p " + "JOIN brands b ON p.brand_id = b.brand_id " + "JOIN suppliers s ON p.supplier_id = s.supplier_id";
-
-        try (Connection conn = Database.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                model.Product p = new model.Product();
-                p.setId(rs.getInt("product_id"));
-                p.setName(rs.getString("name"));
-                p.setBrandName(rs.getString("brand_name"));
-                p.setSupplierName(rs.getString("supplier_name"));
-                p.setSpecifications(rs.getString("specifications"));
-                p.setPrice(rs.getBigDecimal("price"));
-                p.setStockQuantity(rs.getInt("stock_quantity"));
-                products.add(p);
+                products.add(new model.Product(
+                        rs.getInt("product_id"),
+                        rs.getString("name"),
+                        rs.getString("cat_name"),
+                        rs.getString("brand_name"),
+                        rs.getString("supplier_name"),
+                        rs.getDouble("price"),
+                        rs.getString("specifications"),
+                        rs.getInt("stock_quantity")
+                ));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return products;
-    }
-
-
-    public void updateStock(int productId, int quantitySold) throws SQLException {
-        String sql = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?";
-        try (Connection conn = Database.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, quantitySold);
-            stmt.setInt(2, productId);
-            stmt.executeUpdate();
-        }
     }
 }

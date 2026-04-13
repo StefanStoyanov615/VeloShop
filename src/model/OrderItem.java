@@ -1,68 +1,31 @@
 package model;
 
-import java.math.BigDecimal;
-
 public class OrderItem {
-    private int id;
-    private int orderId;
-    private int productId;
-    private int quantity;
-    private BigDecimal priceAtSale;
+    private final int orderItemId;
+    private final Product product;
+    private final int quantity;
+    private final double priceAtSale;
 
-    public OrderItem(int id, int orderId, int productId, int quantity, BigDecimal priceAtSale) {
-        this.id = id;
-        this.orderId = orderId;
-        this.productId = productId;
+    public OrderItem(int orderItemId, Product product, int quantity, double priceAtSale) {
+        this.orderItemId = orderItemId;
+        this.product = product;
         this.quantity = quantity;
         this.priceAtSale = priceAtSale;
     }
 
-    public OrderItem() {
+    public int getOrderItemId() {
+        return orderItemId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getPriceAtSale() {
+    public double getPriceAtSale() {
         return priceAtSale;
     }
-
-    public void setPriceAtSale(BigDecimal priceAtSale) {
-        this.priceAtSale = priceAtSale;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderItem{" + "id=" + id + ", orderId=" + orderId + ", productId=" + productId + ", quantity=" + quantity + ", priceAtSale=" + priceAtSale + '}';
-    }
-
 }
